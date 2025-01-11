@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { auth } from "../firebase/config"; 
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { FaRegUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
     const { user } = useAuth();
@@ -21,47 +22,97 @@ const Navbar = () => {
     };
 
     return (
-        <nav>
-            <div className="flex flex-row items-center justify-between mx-[5vw] mb-16 mt-3">
-                <div className="flex flex-row items-center">
-                    <Image
-                        src={Logo}
-                        alt="Logo"
-                        className="w-[35px] md:w-[40px] xl:w-[50px]"
-                    />
-                    <h4 className="text-xl hidden xl:flex font-medium">
-                        Shojon houladar
-                    </h4>
-                </div>
-                <div className="flex flex-row items-center text-xl font-semibold gap-5">
-                    <Link href="/">Home</Link>
-                    <Link href="/">About Me</Link>
-                    <Link href="/">Contact</Link>
-                    <div>
-                        {user ? (
-                            <div className="flex flex-row items-center gap-1 md:gap-2">
-                                <div
-                                    className="tooltip tooltip-bottom"
-                                    data-tip={user.displayName || "User"}
-                                >
-                                    <Image
-                                        src={user.photoURL || "/default-avatar.png"}
-                                        alt={user.displayName || "User"}
-                                        width={40} // Add width
-                                        height={40}
-                                        className="w-8 md:w-10 h-8 md:h-10 rounded-full"
-                                    />
+        <nav className="sticky top-0 z-50">
+            <div style={{backgroundColor:"#FFFFFF80",}}>
+                <div className="flex flex-row items-center justify-between mx-[5vw] mb-16 pt-3">
+                    {/* Logo */}
+                    <div className="flex flex-row items-center">
+                        <Image
+                            src={Logo}
+                            alt="Logo"
+                            className="w-[35px] md:w-[40px] xl:w-[50px]"
+                        />
+                        <h4 className="text-xl font-medium">
+                            Shojon houladar
+                        </h4>
+                    </div>
+                    {/* desktop /tav vu */}
+                    <div className="hidden lg:flex lg:flex-row items-center text-xl font-semibold gap-5">
+                        <Link href="/">Home</Link>
+                        <Link href="/">About Me</Link>
+                        <Link href="/">Contact</Link>
+                        <div>
+                            {user ? (
+                                <div className="flex flex-row items-center gap-1 md:gap-2">
+                                    <div
+                                        className="tooltip tooltip-bottom"
+                                        data-tip={user.displayName || "User"}
+                                    >
+                                        <Image
+                                            src={user.photoURL || "/default-avatar.png"}
+                                            alt={user.displayName || "User"}
+                                            width={40} // Add width
+                                            height={40}
+                                            className="w-8 md:w-10 h-8 md:h-10 rounded-full"
+                                        />
+                                    </div>
+                                    <button
+                                        className="btn text-sky-600"
+                                        onClick={handleLogout}
+                                    >
+                                        Log out
+                                    </button>
                                 </div>
-                                <button
-                                    className="btn text-sky-600"
-                                    onClick={handleLogout}
-                                >
-                                    Log out
-                                </button>
+                            ) : (
+                                <Link href="/login">Login</Link>
+                            )}
+                        </div>
+                    </div>
+                    {/* mobile vu */}
+                    <div className="dropdown dropdown-end lg:hidden">
+                            <div tabIndex={0} role="button" className="btn btn-ghost ">
+                            {user ? (
+                                        <div className="tooltip" data-tip={user.displayName || "User"}>
+                                        <Image
+                                            src={user.photoURL || "/default-avatar.png"}
+                                            alt={user.displayName || "User"}
+                                            width={40} // Add width
+                                            height={40}
+                                            className="w-8 md:w-10 h-8 md:h-10 rounded-full"
+                                        />
+                                        </div>
+                                ) : (
+                                    <FaRegUserCircle className='text-4xl' />
+                                )}
                             </div>
-                        ) : (
-                            <Link href="/login">Login</Link>
-                        )}
+                                {user ? (
+                                    <ul tabIndex={0}
+                                    className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                        <div className="tooltip" data-tip={user.displayName || "User"}>
+                                        <Image
+                                            src={user.photoURL || "/default-avatar.png"}
+                                            alt={user.displayName || "User"}
+                                            width={40} // Add width
+                                            height={40}
+                                            className="w-8 md:w-10 h-8 md:h-10 rounded-full"
+                                        />
+                                        </div>
+                                        <Link className="text-xl text-green-500" href="/">Home</Link>
+                                        <Link className="text-xl text-green-500" href="/">About Me</Link>
+                                        <Link className="text-xl text-green-500 mb-2" href="/">Contact</Link>
+                                        <button onClick={handleLogout} className="btn text-sky-600">
+                                            Log out
+                                        </button>
+                                    </ul>
+                                ) : (
+                                    <ul tabIndex={0}
+                                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                                        <Link className="text-xl text-green-500" href="/">Home</Link>
+                                        <Link className="text-xl text-green-500" href="/">About Me</Link>
+                                        <Link className="text-xl text-green-500" href="/">Contact</Link>
+                                        <Link className="text-xl text-green-500" href="/login">Login</Link>
+                                    </ul>
+                                )}
                     </div>
                 </div>
             </div>
