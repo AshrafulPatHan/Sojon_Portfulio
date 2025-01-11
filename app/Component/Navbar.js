@@ -3,11 +3,15 @@ import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import Logo from '@/public/logo2.svg'
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
+    const { user } = useAuth();
+
+
     return (
         <nav >
-            <div className='flex flex-row items-center justify-between mx-[5vw] mt-3 '>
+            <div className='flex flex-row items-center justify-between mx-[5vw] mb-16 mt-3 '>
                 <div className='flex flex-row items-center'>
                 <Image src={Logo} alt="Logo"
                 className='w-[35px] md:w-[40px] xl:w-[50px]  '></Image>
@@ -17,7 +21,7 @@ const Navbar = () => {
                     <Link href='/' >Home</Link>
                     <Link href='/' >About Me</Link>
                     <Link href='/' >Contact</Link>
-                    <Link href='/' >Login</Link>
+                    <p> {user ? (`${user.displayName || "User"}`) : (<Link href='/login' >Login</Link>)} </p>
                 </div>
             </div>
         </nav>

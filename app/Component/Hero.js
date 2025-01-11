@@ -8,7 +8,7 @@ import DownloadI from '@/public/watsap.jpg'
 
 const Hero = () => {
     return (
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center mb-16'>
             <div className='flex flex-col-reverse items-center lg:flex-row lg:items-start'>
                 <div className='flex flex-col items-start gap-3'>
                     <h2 className='text-2xl sm:text-4xl font-bold'>Hello, I‘m Shojon Houladar</h2>
