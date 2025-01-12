@@ -1,18 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Footer from "../Component/Footer";
 import Navbar from "../Component/Navbar";
 import { auth } from "../firebase/config";
+import Image from "next/image";
+import { FaEye } from "react-icons/fa";
+import { FaEyeLowVision } from 'react-icons/fa6';
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
+    const [showpas, setShowPas] = useState(false);
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    const emailRef = useRef();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,77 +54,90 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+    const handleForgotPassword = async () => {
+        if (!email) {
+            setError("Please provide your email address."); // Check if email is empty
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email); // Firebase password reset method
+            alert("Password reset email sent! Please check your inbox.");
+        } catch (err) {
+            console.error("Error during password reset:", err.message);
+            setError("Failed to send password reset email.");
+        }
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            <div className="flex flex-1 items-center justify-center mb-40 md:p-0">
-                <div className="flex h-full w-[70vw] overflow-hidden rounded-xl shadow-md">
-                    {/* Design side */}
-                    <div className="relative hidden items-center justify-center bg-blue-300 md:flex md:w-[50%]">
-                        <div className="absolute -top-2 left-[20%] h-16 w-16 rounded-full bg-gradient-to-br from-white via-blue-300 to-blue-400"></div>
-                        <div className="absolute bottom-[18%] left-[20%] h-20 w-20 rounded-full bg-gradient-to-br from-white via-blue-300 to-blue-400"></div>
-                        <div className="absolute -right-7 top-[50%] h-14 w-14 -translate-y-1/2 rounded-full bg-gradient-to-br from-white via-blue-300 to-blue-400 transition-all"></div>
-                        <div className="absolute left-[50%] top-[22%] h-24 w-24 -translate-x-1/2 rounded-full bg-gradient-to-br from-white via-blue-300 to-blue-400"></div>
-                        <div className="z-10 space-y-2 text-center">
-                            <h2 className="text-3xl font-medium text-white/80">Welcome Back</h2>
-                            <p className="animate-pulse text-sm text-white/60">Please Enter Your Information</p>
-                        </div>
-                    </div>
-                    {/* Form side */}
-                    <div className="flex w-full flex-col justify-center bg-white py-10 lg:w-[60%] dark:bg-zinc-900">
-                        <h2 className="pb-8 text-center text-3xl font-semibold tracking-tight text-blue-400">Sign In</h2>
-                        <form className="flex w-full flex-col items-center justify-center gap-4" onSubmit={handleSubmit}>
-                            <input
-                                className="w-[80%] rounded-lg border border-blue-400 bg-transparent py-2 pl-4 text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-300/50 md:w-[60%] dark:text-zinc-400"
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                            <input
-                                className="w-[80%] rounded-lg border border-blue-400 bg-transparent py-2 pl-4 text-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-300/50 md:w-[60%] dark:text-zinc-400"
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            {error && <p className="text-red-500 text-sm">{error}</p>}
-                            <p className="text-[14px] text-gray-400">
-                                Do not have an account? <Link href="/registation" className="text-blue-400">Create one</Link>
-                            </p>
-                            <button
-                                className="uppercase w-[80%] rounded-lg bg-blue-400 px-6 py-2 font-medium text-white outline-none hover:bg-blue-500 md:w-[60%]"
-                                type="submit"
-                                disabled={loading}
+            <div>
+                {/* <div><Image src="" alt="Img" /></div> */}
+                <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+                    <form onSubmit={handleSubmit} className="card-body">
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">Email</span>
+                                    </label>
+                                    <input
+                                        className="input input-bordered"
+                                        type="email"
+                                        placeholder="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-control relative">
+                                    <label className="label">
+                                        <span className="label-text">Password</span>
+                                    </label>
+                                    <input
+                                        className="input input-bordered"
+                                        type={showpas ? "text" : "password"}
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        className="btn btn-xs absolute right-4 top-12"
+                                        aria-label={showpas ? "Hide password" : "Show password"}
+                                        onClick={() => setShowPas(!showpas)}
+                                        type="button"
+                                    >
+                                        {showpas ? <FaEye /> : <FaEyeLowVision />}
+                                    </button>
+                                </div>
+                                <div>
+                                    <button
+                                        className="text-sm text-blue-500 hover:underline"
+                                        onClick={handleForgotPassword}
+                                        type="button"
+                                    >
+                                        Forgot Password?
+                                    </button>
+                                </div>
+                                <div className="form-control mt-6 gap-2">
+                                    <button  
+                                    className="btn btn-primary"
+                                    type="submit"
+                                    disabled={loading}>
+                                        {loading ? "Loading..." : "Submit"}
+                                    </button>
+                                </div>
+                                <Link href="/registation">Not have acount go Registration</Link>
+                    </form>
+                    <button
+                                onClick={handleGoogleSignIn}
+                                className="btn bg-cyan-300 mb-2 mx-8"
                             >
-                                {loading ? "Loading..." : "Submit"}
-                            </button>
-                        </form>
-                        <div className="my-8 flex items-center px-8">
-                            <hr className="flex-1 border-blue-400" />
-                            <div className="mx-4 text-blue-400">OR</div>
-                            <hr className="flex-1 border-blue-400" />
-                        </div>
-                        {/* Sign in with Google */}
-                        <button
-                            className="group mx-auto flex h-[50px] w-fit items-center overflow-hidden rounded-full shadow-md outline-none ring-1 ring-blue-400"
-                            onClick={handleGoogleSignIn}
-                            disabled={loading}
-                        >
-                            <div className="relative z-20 flex h-full items-center bg-blue-400 px-4 text-lg text-white duration-300 group-hover:bg-transparent group-hover:text-blue-400">
-                                Sign in with
-                            </div>
-                            <span className="flex h-full items-center px-4 text-xl font-bold text-blue-400 duration-300 group-hover:bg-blue-400 group-hover:text-white">
-                                Google
-                            </span>
-                        </button>
-                    </div>
+                                Login with Google
+                    </button>
                 </div>
             </div>
             <Footer />
         </div>
     );
 }
+
