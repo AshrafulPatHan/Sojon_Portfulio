@@ -85,7 +85,7 @@ export default function LoginPage() {
                             />
                             {error && <p className="text-red-500 text-sm">{error}</p>}
                             <p className="text-[14px] text-gray-400">
-                                Do not have an account? <Link href="/registration" className="text-blue-400">Create one</Link>
+                                Do not have an account? <Link href="/registation" className="text-blue-400">Create one</Link>
                             </p>
                             <button
                                 className="uppercase w-[80%] rounded-lg bg-blue-400 px-6 py-2 font-medium text-white outline-none hover:bg-blue-500 md:w-[60%]"
